@@ -99,7 +99,7 @@ function addNewBike() {
 // Run functions based on the current page
 document.addEventListener("DOMContentLoaded", function () {
   const path = window.location.pathname;
-  if (path.includes("main.html")) {
+  if (path.includes("index.html")) {
     renderBikes();
   } else if (path.includes("htmlpages/admin.html")) {
     populateAdminForm();
