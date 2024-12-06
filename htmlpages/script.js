@@ -48,28 +48,47 @@ function populateAdminForm() {
         <input type="number" id="exPrice-${bike.id}" value="${bike.exPrice}">
         <label for="onPrice-${bike.id}">On-Road Price:</label>
         <input type="number" id="onPrice-${bike.id}" value="${bike.onPrice}">
+        <label for="image-${bike.id}">Bike Image:</label>
+        <input type="file" id="image-${bike.id}" accept="image/*">
+        <img id="preview-${bike.id}" src="${bike.image}" alt="Bike Image" style="max-width: 100px; margin-top: 10px;">
       </div>
     `
     )
     .join("");
 }
 
-// Save updated prices from admin.html
+// Save updated prices and images from admin.html
 function savePrices() {
   const updatedBikes = bikes.map((bike) => {
     const exPriceInput = document.getElementById(`exPrice-${bike.id}`);
     const onPriceInput = document.getElementById(`onPrice-${bike.id}`);
+    const imageInput = document.getElementById(`image-${bike.id}`);
+    let image = bike.image;  // Keep the current image if no new one is selected
+
+    // If a new image is selected, update the image
+    if (imageInput.files && imageInput.files[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        image = reader.result;  // The base64 string of the image
+        // Save the updated bike data to localStorage after the image is read
+        bike.image = image;
+        localStorage.setItem("bikes", JSON.stringify(updatedBikes));
+        alert("Bike updated successfully!");
+      };
+      reader.readAsDataURL(imageInput.files[0]);
+    }
 
     return {
       ...bike,
       exPrice: parseInt(exPriceInput.value, 10),
       onPrice: parseInt(onPriceInput.value, 10),
+      image: image,  // The image data (base64 string)
     };
   });
 
-  // Save to localStorage
+  // Save the updated bike list to localStorage
   localStorage.setItem("bikes", JSON.stringify(updatedBikes));
-  alert("Prices updated successfully!");
+  alert("Prices and images updated successfully!");
 }
 
 // Add a new bike
@@ -77,22 +96,29 @@ function addNewBike() {
   const name = document.getElementById("newBikeName").value;
   const exPrice = parseInt(document.getElementById("newExPrice").value, 10);
   const onPrice = parseInt(document.getElementById("newOnPrice").value, 10);
-  const image = document.getElementById("newBikeImage").value;
+  const imageInput = document.getElementById("newBikeImage");
+  const file = imageInput.files[0];
 
-  if (name && !isNaN(exPrice) && !isNaN(onPrice) && image) {
-    const newBike = {
-      id: bikes.length + 1,
-      name: name,
-      exPrice: exPrice,
-      onPrice: onPrice,
-      image: image,
+  let image = "";
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      image = reader.result;  // The base64 string of the image
+      const newBike = {
+        id: bikes.length + 1,
+        name: name,
+        exPrice: exPrice,
+        onPrice: onPrice,
+        image: image,  // The base64 image
+      };
+      bikes.push(newBike);
+      localStorage.setItem("bikes", JSON.stringify(bikes));
+      alert("New bike added successfully!");
+      populateAdminForm();  // Re-populate the admin form with updated bike list
     };
-    bikes.push(newBike);
-    localStorage.setItem("bikes", JSON.stringify(bikes));
-    alert("New bike added successfully!");
-    populateAdminForm();  // Re-populate the admin form with updated bike list
+    reader.readAsDataURL(file);
   } else {
-    alert("Please fill in all fields correctly.");
+    alert("Please select an image.");
   }
 }
 

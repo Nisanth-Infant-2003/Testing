@@ -42,7 +42,7 @@
 <body>
   <h1>Admin Page</h1>
   <div id="adminForm"></div>
-
+  
   <!-- Form to Add New Bike -->
   <h2>Add a New Bike</h2>
   <div class="bike-form">
@@ -52,8 +52,10 @@
     <input type="number" id="newExPrice" placeholder="Enter Ex-Showroom Price">
     <label for="newOnPrice">On-Road Price:</label>
     <input type="number" id="newOnPrice" placeholder="Enter On-Road Price">
-    <label for="newBikeImage">Bike Image URL:</label>
-    <input type="text" id="newBikeImage" placeholder="Enter Image URL (or relative path)">
+    <label for="newBikeImage">Bike Image:</label>
+    <input type="file" id="newBikeImage" accept="image/*">
+    <button type="button" id="uploadImageButton">Upload Image</button>
+    <img id="previewImage" src="" alt="Image Preview" style="max-width: 200px; margin-top: 10px;">
     <button onclick="addNewBike()">Add Bike</button>
   </div>
 
