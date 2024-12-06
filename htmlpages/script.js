@@ -49,12 +49,26 @@ function populateAdminForm() {
         <label for="onPrice-${bike.id}">On-Road Price:</label>
         <input type="number" id="onPrice-${bike.id}" value="${bike.onPrice}">
         <label for="image-${bike.id}">Bike Image:</label>
-        <input type="file" id="image-${bike.id}" accept="image/*">
-        <img id="preview-${bike.id}" src="${bike.image}" alt="Bike Image" style="max-width: 100px; margin-top: 10px;">
+        <input type="file" id="image-${bike.id}" accept="image/*" onchange="updateImagePreview(${bike.id})">
+        <img id="preview-${bike.id}" src="${bike.image}" alt="Bike Image" style="max-width: 100px; margin-top: 10px; display: block;">
       </div>
     `
     )
     .join("");
+}
+
+// Update image preview when a new file is selected
+function updateImagePreview(bikeId) {
+  const imageInput = document.getElementById(`image-${bikeId}`);
+  const previewImage = document.getElementById(`preview-${bikeId}`);
+
+  if (imageInput.files && imageInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      previewImage.src = event.target.result;
+    };
+    reader.readAsDataURL(imageInput.files[0]);
+  }
 }
 
 // Save updated prices and images from admin.html
@@ -63,26 +77,13 @@ function savePrices() {
     const exPriceInput = document.getElementById(`exPrice-${bike.id}`);
     const onPriceInput = document.getElementById(`onPrice-${bike.id}`);
     const imageInput = document.getElementById(`image-${bike.id}`);
-    let image = bike.image;  // Keep the current image if no new one is selected
-
-    // If a new image is selected, update the image
-    if (imageInput.files && imageInput.files[0]) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        image = reader.result;  // The base64 string of the image
-        // Save the updated bike data to localStorage after the image is read
-        bike.image = image;
-        localStorage.setItem("bikes", JSON.stringify(updatedBikes));
-        alert("Bike updated successfully!");
-      };
-      reader.readAsDataURL(imageInput.files[0]);
-    }
+    const previewImage = document.getElementById(`preview-${bike.id}`);
 
     return {
       ...bike,
       exPrice: parseInt(exPriceInput.value, 10),
       onPrice: parseInt(onPriceInput.value, 10),
-      image: image,  // The image data (base64 string)
+      image: previewImage.src, // Save the updated image source
     };
   });
 
@@ -103,18 +104,18 @@ function addNewBike() {
   if (file) {
     const reader = new FileReader();
     reader.onloadend = () => {
-      image = reader.result;  // The base64 string of the image
+      image = reader.result; // The base64 string of the image
       const newBike = {
         id: bikes.length + 1,
         name: name,
         exPrice: exPrice,
         onPrice: onPrice,
-        image: image,  // The base64 image
+        image: image, // The base64 image
       };
       bikes.push(newBike);
       localStorage.setItem("bikes", JSON.stringify(bikes));
       alert("New bike added successfully!");
-      populateAdminForm();  // Re-populate the admin form with updated bike list
+      populateAdminForm(); // Re-populate the admin form with updated bike list
     };
     reader.readAsDataURL(file);
   } else {
