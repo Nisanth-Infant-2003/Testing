@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .bike-form {
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 5px;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Page</h1>
+  <div id="adminForm"></div>
+  
+  <!-- Form to Add New Bike -->
+  <h2>Add a New Bike</h2>
+  <div class="bike-form">
+    <label for="newBikeName">Bike Name:</label>
+    <input type="text" id="newBikeName" placeholder="Enter bike name">
+    <label for="newExPrice">Ex-Showroom Price:</label>
+    <input type="number" id="newExPrice" placeholder="Enter Ex-Showroom Price">
+    <label for="newOnPrice">On-Road Price:</label>
+    <input type="number" id="newOnPrice" placeholder="Enter On-Road Price">
+    <label for="newBikeImage">Bike Image:</label>
+    <input type="file" id="newBikeImage" accept="image/*">
+    <button type="button" id="uploadImageButton">Upload Image</button>
+    <img id="previewImage" src="" alt="Image Preview" style="max-width: 200px; margin-top: 10px;">
+    <button onclick="addNewBike()">Add Bike</button>
+  </div>
+
+  <button onclick="savePrices()">Save Changes</button>
+  <a href="../index.html">Back to Main Page</a>
+
+  <script src="script.js"></script>
+</body>
+</html>
